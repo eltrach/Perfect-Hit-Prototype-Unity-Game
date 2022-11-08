@@ -11,14 +11,13 @@ public class ScoreSystem : MonoBehaviour
     void Start() 
     {
         curScore.text = curScoreValue.ToString();
-
     }
 
     public void AddPoint(int pointToAdd)
     {
-        var score =+ curScoreValue + pointToAdd;
+        curScoreValue = pointToAdd + curScoreValue;
 
-        curScore.text =  score.ToString();
+        curScore.text = curScoreValue.ToString();
     }
 
 

@@ -29,8 +29,8 @@ public class GameManager : MonoBehaviour
 	}
     #endregion
    
-    private GameObject gameOverPanel;
-    private GameObject youWinPanel;
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private GameObject youWinPanel;
 
 
     private ScoreSystem scoreSystem;
