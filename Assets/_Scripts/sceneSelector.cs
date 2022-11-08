@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class sceneSelector : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    
+
+    //Change Scene on Button Pressed
+    public void goToSceneNumber(int sceneIndex)
     {
-        
+        //scene Must Be ADDED to the Build Settings > Scenes in Build
+        SceneManager.LoadScene(sceneIndex);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
+
+
 }
