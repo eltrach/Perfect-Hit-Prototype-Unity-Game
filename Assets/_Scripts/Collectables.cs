@@ -20,6 +20,10 @@ public class Collectables : MonoBehaviour
 
             // add a body part to the snake / we try to access to the SnakeMovement Script 
             other.transform.parent.GetComponent<SnakeMovement>().AddBodyPart();
+            
+            //here i added score to the player
+            GameManager.Instance.AddScore(1);
+
             Debug.Log(other.gameObject);
             
         }

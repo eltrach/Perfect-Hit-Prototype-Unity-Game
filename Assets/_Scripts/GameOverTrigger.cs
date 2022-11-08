@@ -6,7 +6,7 @@ public class GameOverTrigger : MonoBehaviour
 {
 
     [SerializeField] private ParticleSystem collectParticle;
-    [SerializeField] private AudioClip collectSound;
+    [SerializeField] private AudioClip GameOver;
     [SerializeField] private AudioSource audioSource; 
 
     void OnTriggerEnter(Collider other) 
@@ -14,10 +14,10 @@ public class GameOverTrigger : MonoBehaviour
         if(other.tag == "collect")
         {
             collectParticle.gameObject.SetActive(true);
-            audioSource.PlayOneShot(collectSound);
+            audioSource.PlayOneShot(GameOver);
 
             // Kill The Player and End The Game 
-            GameManager.Instance.Gameover();
+            GameManager.Instance.GameOver();
 
 
         }

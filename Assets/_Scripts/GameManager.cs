@@ -29,10 +29,33 @@ public class GameManager : MonoBehaviour
 	}
     #endregion
    
+    private GameObject gameOverPanel;
+    private GameObject youWinPanel;
+
+
+    private ScoreSystem scoreSystem;
+
+    void Start() 
+    {
+        scoreSystem = GetComponent<ScoreSystem>();    
+    }
+
+    public void Victory()
+    {
+
+    }
+
+    public void GameOver()
+    {
+        Debug.Log( "Your Died  ");
+        Time.timeScale = 0f;
+    }
+    public void AddScore(int scoreToAddValue)
+    {
+        scoreSystem.AddPoint(scoreToAddValue);
+    }
 
 
 
-
-   
     
 }
