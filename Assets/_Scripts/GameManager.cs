@@ -33,20 +33,27 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject victoryPanel;
 
-
     private ScoreSystem scoreSystem;
 
+
+    [SerializeField] private GameObject[] player;
     void Start() 
     {
         gameOverPanel.SetActive(false);
         victoryPanel.SetActive(false);
         scoreSystem = GetComponent<ScoreSystem>(); 
 
+        player = GameObject.FindGameObjectsWithTag("collect");
+
     }
 
     public void Victory()
     {
         victoryPanel.SetActive(true);
+        for (int i = 0; i < player.Length; i++)
+        {
+            player[i].SetActive(false);
+        }
     }
 
     public void GameOver()
@@ -70,8 +77,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         Scene curScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(curScene.buildIndex + 1);
-
     }
+    
+
 
 
     
