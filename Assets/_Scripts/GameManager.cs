@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,42 +20,58 @@ public class GameManager : MonoBehaviour
     {
         if (instance) 
         {
-            DestroyImmediate (gameObject);
+              DestroyImmediate (gameObject);
         } 
         else 
         {
-            DontDestroyOnLoad (gameObject);
+            //DontDestroyOnLoad (gameObject);
             instance = this;
         }
 	}
     #endregion
    
     [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private GameObject youWinPanel;
+    [SerializeField] private GameObject victoryPanel;
 
 
     private ScoreSystem scoreSystem;
 
     void Start() 
     {
-        scoreSystem = GetComponent<ScoreSystem>();    
+        gameOverPanel.SetActive(false);
+        victoryPanel.SetActive(false);
+        scoreSystem = GetComponent<ScoreSystem>(); 
+
     }
 
     public void Victory()
     {
-
+        victoryPanel.SetActive(true);
     }
 
     public void GameOver()
     {
-        Debug.Log( "Your Died  ");
+        gameOverPanel.SetActive(true);
         Time.timeScale = 0f;
     }
+    
     public void AddScore(int scoreToAddValue)
     {
         scoreSystem.AddPoint(scoreToAddValue);
     }
+    public void retry()
+    {
+        Time.timeScale = 1f;
+        Scene curScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(curScene.buildIndex);
+    }
+    public void NextLevel()
+    {
+        Time.timeScale = 1f;
+        Scene curScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(curScene.buildIndex + 1);
 
+    }
 
 
     

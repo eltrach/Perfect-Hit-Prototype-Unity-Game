@@ -16,6 +16,7 @@ public class Collectables : MonoBehaviour
         {
             collectParticle.gameObject.SetActive(true);
             audioSource.PlayOneShot(collectSound);
+            gameObject.transform.parent.GetComponent<MeshRenderer>().enabled = false;
             Destroy(toDestroy , .5f);
 
             // add a body part to the snake / we try to access to the SnakeMovement Script 
