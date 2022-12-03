@@ -6,20 +6,16 @@ public class GameOverTrigger : MonoBehaviour
 {
 
     [SerializeField] private ParticleSystem collectParticle;
-    [SerializeField] private AudioClip GameOver;
     [SerializeField] private AudioSource audioSource; 
 
     void OnTriggerEnter(Collider other) 
     {
-        if(other.tag == "collect")
+        //other.tag == "head"
+        if(true)
         {
-            collectParticle.gameObject.SetActive(true);
-            audioSource.PlayOneShot(GameOver);
-
-            // Kill The Player and End The Game 
-            GameManager.Instance.GameOver();
-
-
+            if(collectParticle) collectParticle.gameObject.SetActive(true);
+            // remove a ball when colliding with obstacles
+            other.transform.gameObject.GetComponentInParent<SnakeMovement>().removeBodyPart();
         }
     }
 }

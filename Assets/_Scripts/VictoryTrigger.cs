@@ -10,7 +10,7 @@ public class VictoryTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider other) 
     {
-        if(other.tag == "collect")
+        if(other.tag == "head")
         {
             winParticle.gameObject.SetActive(true);
             audioSource.PlayOneShot(win);

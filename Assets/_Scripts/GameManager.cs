@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(AudioSource))]
 public class GameManager : MonoBehaviour
 {
     #region Singleton 
@@ -33,48 +34,57 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject victoryPanel;
 
+    [Header("Sounds")]
+
+    [SerializeField] private AudioClip gameOverSound;
+    [SerializeField] private AudioClip BallonPopSound;
+ 
+    [SerializeField] private AudioSource audioSource; 
+
     private ScoreSystem scoreSystem;
+    private List<GameObject> players = new List<GameObject>();
 
-
-    [SerializeField] private GameObject[] player;
     void Start() 
     {
         gameOverPanel.SetActive(false);
         victoryPanel.SetActive(false);
         scoreSystem = GetComponent<ScoreSystem>(); 
 
-        player = GameObject.FindGameObjectsWithTag("collect");
-
+        players.Add(GameObject.FindGameObjectWithTag("Player"));
     }
 
     public void Victory()
     {
-        victoryPanel.SetActive(true);
-        for (int i = 0; i < player.Length; i++)
+
+        for (int i = 0; i < players.Count; i++)
         {
-            player[i].SetActive(false);
+            players[i].gameObject.SetActive(false);
         }
+
+        Debug.Log("win");
+        victoryPanel.SetActive(true);
     }
 
     public void GameOver()
     {
         gameOverPanel.SetActive(true);
-        Time.timeScale = 0f;
+        audioSource.PlayOneShot(gameOverSound);
     }
-    
+    public void BallonPop()
+    {
+        audioSource.PlayOneShot(BallonPopSound);
+    }
     public void AddScore(int scoreToAddValue)
     {
         scoreSystem.AddPoint(scoreToAddValue);
     }
     public void retry()
     {
-        Time.timeScale = 1f;
         Scene curScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(curScene.buildIndex);
     }
     public void NextLevel()
     {
-        Time.timeScale = 1f;
         Scene curScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(curScene.buildIndex + 1);
     }

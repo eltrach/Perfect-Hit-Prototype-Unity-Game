@@ -11,8 +11,9 @@ public class Collectables : MonoBehaviour
     [SerializeField] private AudioSource audioSource; 
 
     void OnTriggerEnter(Collider other) 
-    {
-        if(other.tag == "collect")
+    {            
+
+        if(other.tag == "head")
         {
             collectParticle.gameObject.SetActive(true);
             audioSource.PlayOneShot(collectSound);
@@ -20,12 +21,13 @@ public class Collectables : MonoBehaviour
             Destroy(toDestroy , .5f);
 
             // add a body part to the snake / we try to access to the SnakeMovement Script 
-            other.transform.parent.GetComponent<SnakeMovement>().AddBodyPart();
+            other.gameObject.GetComponentInParent<SnakeMovement>().AddBodyPart();
             
             //here i added score to the player
             GameManager.Instance.AddScore(1);
 
-            Debug.Log(other.gameObject);
+            Debug.Log("collect  "+ other.gameObject.GetComponentInParent<SnakeMovement>() );
+
             
         }
     }

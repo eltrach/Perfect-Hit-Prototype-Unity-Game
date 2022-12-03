@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - collect
+  - FxTemporaire
+  - BodyParts
+  - head
+  - Tile
   layers:
   - Default
   - TransparentFX

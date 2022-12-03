@@ -1,45 +1,60 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class SnakeMovement : MonoBehaviour
 {
 
-    public List<Transform> bodyParts = new List<Transform>();
+    [SerializeField] private List<Transform> bodyParts = new List<Transform>();
 
-    public float minDistance = 0.25f;
+    // min distance between each ball.
+    [SerializeField] private float minDistance = 0.25f;
 
-    public int beginSize;
-    
-    public float speed = 1;
-    public float rotationSpeed = 50;
+    [SerializeField] public int beginSize = 2;
+    [SerializeField] private float speed = 10;
+    [SerializeField] private float rotationSpeed = 50;
 
-    public GameObject bodyprefabs;
+    [SerializeField] private GameObject bodyPrefab;
 
-    private float dis;
-    private Transform curBodyPart;
-    private Transform PrevBodyPart;
-
+    [SerializeField] private float totalBodyparts;
     [SerializeField] private Transform cameraPosition;
+    [SerializeField] private Transform CureBodyPart;
 
+    public Transform PrevBodyPart;
+    private float dis;
+    private float minX = -5 ,maxX = 5f; // movements boundaries 
+    public CinemachineVirtualCamera cmFreeCam; // used for the camera shake
 
-    // Start is called before the first frame update
     void Start()
     {
+        // add Body part at start / it can be controled by beginSize variable
+
         for (int i = 0; i < beginSize - 1; i++)
         {
             AddBodyPart();
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        cameraPosition.position = bodyParts[0].transform.position;
         Move();
+        GameOver();
+        totalBodyparts = bodyParts.Count;
+        cameraPosition.position = bodyParts[0].transform.position;
 
-        if (Input.GetKey(KeyCode.Q))
-            AddBodyPart();
+
+    }
+
+    private void GameOver()
+    {
+        // game over
+        if(totalBodyparts == 1)
+        {
+            bodyParts.RemoveAt(0);
+            GameManager.Instance.GameOver();
+        }    
     }
 
     private void Move()
@@ -47,32 +62,22 @@ public class SnakeMovement : MonoBehaviour
 
         float curspeed = speed;
 
-        // if (Input.GetKey(KeyCode.W))
-        // {
-        //     curspeed *= 2;
-        // }
-      //  bodyParts[0].Translate(bodyParts[0].forward * curspeed * Time.smoothDeltaTime, Space.World);
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float horizOffset = moveHorizontal * rotationSpeed *  Time.deltaTime;
 
-        float Horizontal = Input.GetAxis("Horizontal");
-        // if (Horizontal != 0)
-        // {
-            //bodyParts[0].Rotate(Vector3.up * rotationSpeed * Time.deltaTime * Mathf.Abs(Horizontal));
-        //    float turn =  Vector3.up * rotationSpeed * Time.deltaTime * Mathf.Abs(Horizontal)
-            float moveHorizontal = Input.GetAxis("Horizontal");
+        float rawhori = bodyParts[0].gameObject.transform.position.x + horizOffset;
+        float ClampedHoriz = Mathf.Clamp(rawhori , minX , maxX);
 
-            Vector3 movements = new Vector3(moveHorizontal *rotationSpeed *  Time.deltaTime, 0, curspeed * Time.deltaTime );
+        float forward = bodyParts[0].gameObject.transform.position.z + ( curspeed * Time.deltaTime) ;
 
-            // bodyParts[0].transform.position += movements;
-            bodyParts[0].gameObject.GetComponent<CharacterController>().Move( movements );
+        bodyParts[0].gameObject.transform.position = new Vector3 (ClampedHoriz , bodyParts[0].gameObject.transform.position.y  , forward );
 
-        
-        // }
-        for (int i = 1; i < bodyParts.Count; i++)
+        for ( int i = 1; i < bodyParts.Count; i++ )
         {
-            curBodyPart = bodyParts[i];
+            CureBodyPart = bodyParts[i];
             PrevBodyPart = bodyParts[i - 1];
 
-            dis = Vector3.Distance(PrevBodyPart.position,curBodyPart.position);
+            dis = Vector3.Distance(PrevBodyPart.position,CureBodyPart.position);
 
             Vector3 newpos = PrevBodyPart.position;
 
@@ -80,22 +85,57 @@ public class SnakeMovement : MonoBehaviour
 
             float T = Time.deltaTime * dis / minDistance * curspeed;
 
-            if (T > 0.5f)
+            if ( T > 0.5f )
                 T = 0.5f;
-            curBodyPart.position = Vector3.Slerp(curBodyPart.position, newpos, T);
-            curBodyPart.rotation = Quaternion.Slerp(curBodyPart.rotation, PrevBodyPart.rotation, T);
+            CureBodyPart.position = Vector3.Slerp(CureBodyPart.position, newpos, T);
+            CureBodyPart.rotation = Quaternion.Slerp(CureBodyPart.rotation, PrevBodyPart.rotation, T);
         }
     }
     public void AddBodyPart()
     {
-        //we add a bodyPart When we Collect a Bodypart 
+        //we add a bodyPart When we Collect a Bodypart / Coin...
 
-        Transform newpart = (Instantiate (bodyprefabs, bodyParts[bodyParts.Count - 1].position, bodyParts[bodyParts.Count - 1].rotation) as GameObject).transform;
+        Transform newpart = (Instantiate (bodyPrefab, bodyParts[bodyParts.Count - 1].position, bodyParts[bodyParts.Count - 1].rotation) as GameObject).transform;
 
         newpart.SetParent(transform);
 
         bodyParts.Add(newpart);
+
     }
+
+    public void removeBodyPart()
+    {
+
+        Destroy( bodyParts[1].gameObject );
+        bodyParts.RemoveAt(1);
+        bodyParts[0].transform.position = new Vector3(bodyParts[0].transform.position.x , bodyParts[0].transform.position.y , bodyParts[0].transform.position.z - 0.5f);
+
+        GameManager.Instance.BallonPop();
+        _ProcessShake();
+    }
+
+    public IEnumerator _ProcessShake()
+    {
+        Noise(10, 1f);
+        yield return new WaitForSeconds(0.1f);
+        Noise(0, 0);
+    }
+
+    public void Noise(float amplitudeGain, float frequencyGain)
+        {
+            cmFreeCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitudeGain;
+            
+            cmFreeCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = frequencyGain;
+ 
+        }
+
+    public void setMinXandMaxX(float _minx , float _maxX)
+    {
+        minX *= _minx;
+        maxX *= _maxX;
+    }
+
+
 
 }
 
