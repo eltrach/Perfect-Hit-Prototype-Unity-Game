@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Generators/Level Generation By Tiles.unity
+    path: Assets/_Scenes/Generators/_Level Generation By Tiles Finished.unity
     guid: 6f26c53e88527cb4c86213b1c9a60968
   m_configObjects: {}

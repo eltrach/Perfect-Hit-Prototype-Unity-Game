@@ -1,0 +1,6 @@
+There is two scenes 
+ - Level Generation By Changing Scale V0.1 NotFinished : in this scene i changed the level scale (width and length),
+but the materiel doesn't look good enough , it stretches it
+ - _Level Generation By Tiles Finished : in this scene i create a GroundTile Prefab and i generated based on the Lenght,
+for the width i only change the scale i guess this method is better for good visuals...
+ - _Level Generation : Final version .
